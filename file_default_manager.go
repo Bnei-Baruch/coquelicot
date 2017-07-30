@@ -1,6 +1,9 @@
 package coquelicot
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
+	"io"
 	"os"
 )
 
@@ -18,6 +21,7 @@ func (fdm *fileDefaultManager) ToJson() map[string]interface{} {
 		"url":      fdm.Url(),
 		"filename": fdm.Filename,
 		"size":     fdm.Size,
+		"sha1":     fdm.Sha,
 	}
 }
 
@@ -35,6 +39,11 @@ func (fdm *fileDefaultManager) rawCopy(src, convert string) error {
 		return err
 	}
 	fdm.Size = fi.Size()
+	h := sha1.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return err
+	}
+	fdm.Sha = hex.EncodeToString(h.Sum(nil))
 
 	return nil
 }

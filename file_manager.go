@@ -18,6 +18,7 @@ type fileBaseManager struct {
 	Dir      *dirManager
 	Version  string
 	Filename string
+	Sha      string
 }
 
 // Return fileManager for given base mime and version.
