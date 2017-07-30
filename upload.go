@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"github.com/rakyll/magicmime"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -214,18 +215,15 @@ func (up *uploader) Write(temp_file *os.File, body io.Reader) error {
 
 // identifyMine gets base mime type.
 func identifyMime(file string) (string, error) {
-	f, err := os.Open(file)
+	if err := magicmime.Open(magicmime.MAGIC_MIME_TYPE | magicmime.MAGIC_SYMLINK | magicmime.MAGIC_ERROR); err != nil {
+		return "", err
+	}
+	defer magicmime.Close()
+
+	mime, err := magicmime.TypeByFile(file)
 	if err != nil {
 		return "", err
 	}
-	defer f.Close()
-	// DetectContentType reads at most the first 512 bytes
-	buf := make([]byte, 512)
-	_, err = f.Read(buf)
-	if err != nil {
-		return "", err
-	}
-	mime := strings.Split(http.DetectContentType(buf), "/")[0]
 
 	return mime, nil
 }
