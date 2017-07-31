@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"gopkg.in/gotsunami/coquelicot.v1"
+	"github.com/amnonbb/coquelicot/lib"
 )
 
 func main() {
